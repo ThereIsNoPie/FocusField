@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.2" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataProcessor\" />
+    <Folder Include="TimeService\" />
+    <Folder Include="ScoreProvider\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="DataProcessor\IDataStorer.cs" />
+  </ItemGroup>
+</Project>
