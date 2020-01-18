@@ -30,14 +30,18 @@ namespace FocusField.Core.DataProcessor
         {
             var currentTime = _timeService.GetTime();
 
-            if (_previousTime == null)
+            if (_previousTime == default)
             {
                 _previousTime = currentTime;
+                _previousId = itemId;
                 return;
             }
 
-            if (itemId == _previousId && currentTime - _previousTime < TimeSpan.FromSeconds(5))
+            if (itemId == _previousId
+                && (currentTime - _previousTime) < TimeSpan.FromSeconds(5))
+            {
                 return;
+            }
 
             var focusData = new FocusData(_previousTime, currentTime, _previousId);
             _uploadService.StoreData(focusData);
