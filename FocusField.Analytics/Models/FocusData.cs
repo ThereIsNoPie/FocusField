@@ -34,11 +34,6 @@ namespace FocusField.Analytics.Models
                     ItemId)
                 : null;
 
-       
-
-
-
-
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return StartTime;

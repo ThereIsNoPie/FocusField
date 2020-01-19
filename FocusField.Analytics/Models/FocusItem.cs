@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace FocusField.Analytics.Models
 {
@@ -21,18 +22,21 @@ namespace FocusField.Analytics.Models
 
         public void AddAndCombineItem(FocusData data)
         {
-            var tempArray = Data;
-            var toCombine = data;
-            var combineable = tempArray.FirstOrDefault(x => x.CanCombine(toCombine));
+            var gotCombined = new List<FocusData>();
 
-            while (combineable != null)
+            var combined = data;
+
+            foreach (var item in Data)
             {
-                tempArray = tempArray.Except(new List<FocusData>() { combineable });
-                toCombine = combineable.Combine(toCombine).Value;
-                combineable = tempArray.FirstOrDefault(x => x.CanCombine(toCombine));
+                if (item.CanCombine(combined))
+                {
+                    combined = item.Combine(combined).Value;
+                    gotCombined.Add(item);
+                }
             }
 
-            Data = tempArray.Concat(new List<FocusData>() { toCombine });
+            Data = Data.Except(gotCombined)
+                .Concat(new List<FocusData>() { combined });
         }
     }
 }
