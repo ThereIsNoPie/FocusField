@@ -10,28 +10,10 @@ using Newtonsoft.Json;
 
 namespace FocusField.Analytics.Repository
 {
-    public class FocusRepository
+    public class DownloadService
     {
         //private static IEnumerable<FocusItem> _data = new List<FocusItem>();
         //public IEnumerable<FocusItem> GetAll() => _data;
-
-        private List<FocusItem> AddDataToCollection(
-            FocusData data, List<FocusItem> allData)
-        {
-            if (allData.Any(x => x.ItemId == data.ItemId))
-            {
-                allData.First(x => x.ItemId == data.ItemId).AddAndCombineItem(data);
-            }
-            else
-            {
-                var focusItem = new FocusItem(data.ItemId);
-                focusItem.AddAndCombineItem(data);
-                allData.Add(focusItem);
-            }
-
-            return allData;
-        }
-
         public async Task<IEnumerable<FocusItem>> GetFocusDataFromServer()
         {
             var connectionString = "DefaultEndpointsProtocol=https;" +
@@ -54,7 +36,7 @@ namespace FocusField.Analytics.Repository
                     var resultSegment = await container.ListBlobsSegmentedAsync(
                         prefix: null,
                         useFlatBlobListing: true,
-                        BlobListingDetails.All,
+                        BlobListingDetails.None,
                         maxResults: 1000,
                         continuationToken,
                         options: null,
@@ -63,7 +45,6 @@ namespace FocusField.Analytics.Repository
                     continuationToken = resultSegment.ContinuationToken;
                     foreach (var blob in resultSegment.Results)
                     {
-                        Console.WriteLine("asdf");
                         var jsonBlobData = await httpClient.GetStringAsync(blob.Uri);
 
                         var dtos = JsonConvert.DeserializeObject<IEnumerable<FocusDataDto>>(jsonBlobData);
@@ -86,20 +67,26 @@ namespace FocusField.Analytics.Repository
             while (continuationToken != null);
 
             return returnedItems;
-
-            //BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
-            //var container = blobServiceClient.GetBlobContainerClient(containerName);
-            //var blobs = container.GetBlobs();
-            //var blob = blobs.First();
-            //blob.Metadata.Keys.First();
-
-            //var blobsEnumerator = container.GetBlobsAsync().GetAsyncEnumerator();
-            //while (await blobsEnumerator.MoveNextAsync())
-            //{
-            //    var jsonBlobData = blobsEnumerator.Current;
-            //    Console.WriteLine("Asdf");
-            //    //var data = JsonConvert.DeserializeObject<IEnumerable<FocusDataDto>>(jsonBlobData);
-            //}
         }
+
+
+        private List<FocusItem> AddDataToCollection(
+            FocusData data, List<FocusItem> allData)
+        {
+            if (allData.Any(x => x.ItemId == data.ItemId))
+            {
+                allData.First(x => x.ItemId == data.ItemId).AddAndCombineItem(data);
+            }
+            else
+            {
+                var focusItem = new FocusItem(data.ItemId);
+                focusItem.AddAndCombineItem(data);
+                allData.Add(focusItem);
+            }
+
+            return allData;
+        }
+
+        
     }
 }

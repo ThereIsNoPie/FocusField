@@ -17,7 +17,7 @@ namespace TestAnalytics
 
         private static async Task TestApiAsync()
         {
-            var repository = new FocusRepository();
+            var repository = new DownloadService();
             var allData = await repository.GetFocusDataFromServer();
 
             foreach (var item in allData)
