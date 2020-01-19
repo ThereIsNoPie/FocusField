@@ -21,6 +21,8 @@ namespace FocusField.Analytics.Models
 
         public TimeSpan TimeSpent => EndTime - StartTime;
 
+        public bool IsInTimeSpan(DateTime time) =>
+            time >= StartTime && time <= EndTime;
 
         public bool CanCombine(FocusData data) =>
             data.ItemId == ItemId

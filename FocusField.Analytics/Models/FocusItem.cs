@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using CSharpFunctionalExtensions;
 
 namespace FocusField.Analytics.Models
 {
     public class FocusItem 
     {
-        IEnumerable<FocusData> Data { get; set; }
+        public IEnumerable<FocusData> Data { get; private set; }
         public FocusItem(int itemId)
         {
             ItemId = itemId;
@@ -18,7 +19,10 @@ namespace FocusField.Analytics.Models
         public int ItemId { get; }
 
         public TimeSpan TimeSpent => Data.Select(x => x.TimeSpent).Combine();
+        public DateTime? Earliest => Data.FirstOrDefault()?.StartTime;
+        public DateTime? Latest => Data.LastOrDefault()?.EndTime;
 
+        public bool IsInItems(DateTime time) => Data.Any(x => x.IsInTimeSpan(time));
 
         public void AddAndCombineItem(FocusData data)
         {
@@ -36,7 +40,8 @@ namespace FocusField.Analytics.Models
             }
 
             Data = Data.Except(gotCombined)
-                .Concat(new List<FocusData>() { combined });
+                .Concat(new List<FocusData>() { combined })
+                .OrderBy(x=>x.StartTime);
         }
     }
 }

@@ -14,16 +14,15 @@ namespace FocusField.ManualTest
                 new TimeService(),
                 new UploadService(new TimeService()));
 
-            uploader.ProcessData(3);
-            Thread.Sleep(500);
-            uploader.ProcessData(3);
-            Thread.Sleep(8000);
-            uploader.ProcessData(1);
-            Thread.Sleep(2000);
-            uploader.ProcessData(1);
-            Thread.Sleep(10000);
-            uploader.ProcessData(3);
+            while(true)
+            {
+                var s = Console.ReadLine();
+                var didParse = Int32.TryParse(s, out var val);
 
+                if (!didParse)
+                    break;
+                uploader.ProcessData(val);
+            }
 
         }
     }
